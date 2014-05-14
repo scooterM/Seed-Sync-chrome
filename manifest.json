@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 
 	"name": "Seed Sync Push",
-	"description": "Send a torrent to SeedSync",
+	"description": "Send a torrent to Seed-Sync",
 
 	"version": "1.0",
 
@@ -17,5 +17,13 @@
 			"run_at": "document_idle",
 			"all_frames": true
 		}
-	]
+	],
+
+	"browser_action": {
+		"default_title": "Toggle"
+	},
+
+	"background": {
+		"scripts": ["background.js"]
+	}
 }

@@ -1,24 +1,46 @@
-// I can't think of a reason we'd need to remove buttons
-
-var anchors = document.links;
-
-for (var i = 0; i < anchors.length; i++) {
-	var anchor = anchors[i];
-
-	// supports direct link to torrents (works for IPT)
-	var direct = anchor.href.match(/.*\.torrent/);
-
-	// supports BTN-style links
-	var btn = anchor.href.match(/.*torrents\.php.*action=download.*/);
-	if (direct || btn) {
-		addButton(anchor);
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.visible) {
+		addPushButtons();
+	} else {
+		removePushButtons();
 	}
+});
+
+addPushButtons();
+
+function addPushButtons() {
+	var anchors = document.links;
+
+	for (var i = 0; i < anchors.length; i++) {
+		var anchor = anchors[i];
+
+		// supports direct link to torrents (works for IPT)
+		var direct = anchor.href.match(/.*\.torrent/);
+
+		// supports BTN-style links
+		var btn = anchor.href.match(/.*torrents\.php.*action=download.*/);
+		if (direct || btn) {
+			addButton(anchor);
+		}
+	}
+}
+
+function removePushButtons() {
+	var buttons = document.getElementsByTagName('button');
+
+	for (var i = buttons.length - 1; i >= 0; i--) {
+		var button = buttons[i];
+		if (button.getAttribute('seed-sync-push')) {
+			button.parentNode.removeChild(button);
+		}
+	} 
 }
 
 function addButton(anchor) {
 	var downloadButton = document.createElement('button');
 	downloadButton.onclick = downloadOnClick(anchor.href);
 	downloadButton.appendChild(document.createTextNode('Push'));
+	downloadButton.setAttribute('seed-sync-push', true);
 	anchor.parentNode.insertBefore(downloadButton, anchor.nextSibling);
 }
 
